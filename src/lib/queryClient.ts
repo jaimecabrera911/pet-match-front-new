@@ -1,10 +1,15 @@
+
 import { QueryClient } from "@tanstack/react-query";
 
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       queryFn: async ({ queryKey }) => {
-        const res = await fetch(queryKey[0] as string, {
+        const baseUrl = "https://lt45q2kj-8080.use2.devtunnels.ms/api/v1";
+        const path = queryKey[0] as string;
+        const url = path.startsWith("http") ? path : `${baseUrl}${path}`;
+        
+        const res = await fetch(url, {
           credentials: "include",
         });
 
