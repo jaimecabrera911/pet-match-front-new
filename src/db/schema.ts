@@ -4,6 +4,7 @@ import { relations } from "drizzle-orm";
 import { z } from "zod";
 
 export const documentTypes = [
+  "",
   "CEDULA DE CIUDADANIA",
   "PASAPORTE",
   "CEDULA DE EXTRANJERIA",

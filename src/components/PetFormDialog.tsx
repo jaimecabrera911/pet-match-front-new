@@ -2,13 +2,13 @@ import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "../hooks/use-toast";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "./ui/form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import type { SelectPet } from "@db/schema";
+import type { SelectPet } from "../db/schema";
 import { X } from "lucide-react";
 
 const petSchema = z.object({

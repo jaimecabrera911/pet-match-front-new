@@ -8,7 +8,7 @@ import {
   TableRow,
 } from "./ui/table";
 import { Pencil, Trash2 } from "lucide-react";
-import type { SelectPet } from "@db/schema";
+import type { SelectPet } from "../db/schema";
 
 interface PetTableProps {
   pets: SelectPet[];

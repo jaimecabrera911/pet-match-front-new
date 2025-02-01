@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { PetCard } from "./PetCard";
 import { FiltersSection } from "./FiltersSection";
-import type { SelectPet } from "@db/schema";
+import type { SelectPet } from "../db/schema";
 
 export function PetGrid() {
   const [ageRange, setAgeRange] = useState<[number, number]>([0, 15]);

@@ -25,8 +25,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select";
-import { useToast } from "@/hooks/use-toast";
-import { insertUserSchema, type SelectUser, type InsertUser, documentTypes } from "@db/schema";
+import { useToast } from "../hooks/use-toast";
+import { insertUserSchema, type SelectUser, type InsertUser, documentTypes } from "../db/schema";
 
 // Define available roles
 const userRoles = ["USER", "ADMIN"] as const;
@@ -49,7 +49,7 @@ export function UserFormDialog({ isOpen, onClose, user }: UserFormDialogProps) {
       nombres: "",
       apellidos: "",
       genero: "M",
-      fechaNacimiento: null,
+      fechaNacimiento: new Date(),
       telefono: "",
       direccion: "",
       ciudad: "",
@@ -64,7 +64,7 @@ export function UserFormDialog({ isOpen, onClose, user }: UserFormDialogProps) {
     if (user) {
       form.reset({
         ...user,
-        fechaNacimiento: user.fechaNacimiento ? new Date(user.fechaNacimiento) : null,
+        fechaNacimiento: user.fechaNacimiento ? new Date(user.fechaNacimiento) : new Date(),
         password: "", // Don't show password
       });
     } else {
@@ -74,7 +74,7 @@ export function UserFormDialog({ isOpen, onClose, user }: UserFormDialogProps) {
         nombres: "",
         apellidos: "",
         genero: "M",
-        fechaNacimiento: null,
+        fechaNacimiento: new Date(),
         telefono: "",
         direccion: "",
         ciudad: "",
