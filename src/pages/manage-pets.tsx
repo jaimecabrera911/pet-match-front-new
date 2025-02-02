@@ -2,24 +2,29 @@ import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "../components/ui/button";
 import { PlusCircle } from "lucide-react";
-import type { SelectPet } from "../db/schema";
 import { useToast } from "../hooks/use-toast";
 import { PetTable } from "../components/PetTable";
 import { PetFormDialog } from "../components/PetFormDialog";
-
+import { Pet } from "../db/schema";
 export default function ManagePets() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const [selectedPet, setSelectedPet] = useState<SelectPet | undefined>(undefined);
+  const [selectedPet, setSelectedPet] = useState<Pet | undefined>(
+    undefined,
+  );
   const [isFormOpen, setIsFormOpen] = useState(false);
 
-  const { data: pets, isLoading } = useQuery<SelectPet[]>({
-    queryKey: ["/api/pets"],
+  const { data: pets, isLoading } = useQuery<[]>({
+    queryKey: ["/mascotas"],
+    select:(data ) => {
+      console.log("DATA",data)
+      return data
+    }
   });
 
   const deletePetMutation = useMutation({
     mutationFn: async (petId: number) => {
-      const response = await fetch(`/api/pets/${petId}`, {
+      const response = await fetch(`/mascotas/${petId}`, {
         method: "DELETE",
         credentials: "include",
       });
@@ -29,7 +34,7 @@ export default function ManagePets() {
       }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/pets"] });
+      queryClient.invalidateQueries({ queryKey: ["/mascotas"] });
       toast({
         title: "Éxito",
         description: "Mascota eliminada correctamente",
@@ -50,7 +55,7 @@ export default function ManagePets() {
     }
   };
 
-  const handleEdit = (pet: SelectPet) => {
+  const handleEdit = (pet: Pet) => {
     setSelectedPet(pet);
     setIsFormOpen(true);
   };

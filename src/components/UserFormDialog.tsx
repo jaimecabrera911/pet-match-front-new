@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -26,7 +26,7 @@ import {
   SelectValue,
 } from "./ui/select";
 import { useToast } from "../hooks/use-toast";
-import { insertUserSchema, type SelectUser, type InsertUser, documentTypes } from "../db/schema";
+import { documentTypes, User, userSchema } from "../db/schema";
 
 // Define available roles
 const userRoles = ["USER", "ADMIN"] as const;
@@ -34,15 +34,15 @@ const userRoles = ["USER", "ADMIN"] as const;
 interface UserFormDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  user?: SelectUser;
+  user?: User;
 }
 
 export function UserFormDialog({ isOpen, onClose, user }: UserFormDialogProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const form = useForm<InsertUser>({
-    resolver: zodResolver(insertUserSchema),
+  const form = useForm<User>({
+    resolver: zodResolver(userSchema),
     defaultValues: {
       tipoDocumento: "",
       numeroDocumento: "",
@@ -87,7 +87,7 @@ export function UserFormDialog({ isOpen, onClose, user }: UserFormDialogProps) {
   }, [user, form]);
 
   const createUserMutation = useMutation({
-    mutationFn: async (data: InsertUser) => {
+    mutationFn: async (data: User) => {
       const formattedData = {
         ...data,
         fechaNacimiento: data.fechaNacimiento ? new Date(data.fechaNacimiento).toISOString() : null,
@@ -124,7 +124,7 @@ export function UserFormDialog({ isOpen, onClose, user }: UserFormDialogProps) {
   });
 
   const updateUserMutation = useMutation({
-    mutationFn: async (data: InsertUser) => {
+    mutationFn: async (data: User) => {
       if (!user) return;
 
       const formattedData = {
@@ -162,7 +162,7 @@ export function UserFormDialog({ isOpen, onClose, user }: UserFormDialogProps) {
     },
   });
 
-  const onSubmit = async (data: InsertUser) => {
+  const onSubmit = async (data: User) => {
     if (user) {
       await updateUserMutation.mutateAsync(data);
     } else {

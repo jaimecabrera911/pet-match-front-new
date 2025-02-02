@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import type { InsertUser, SelectUser } from "../db/schema";
+import type { User } from "../db/schema";
 
 type RequestResult =
   | {
@@ -13,7 +13,7 @@ type RequestResult =
 async function handleRequest(
   url: string,
   method: string,
-  body?: InsertUser,
+  body?: User,
 ): Promise<RequestResult> {
   try {
     const response = await fetch(url, {
@@ -38,7 +38,7 @@ async function handleRequest(
   }
 }
 
-async function fetchUser(): Promise<SelectUser | null> {
+async function fetchUser(): Promise<User | null> {
   const response = await fetch("/api/user", {
     credentials: "include",
   });
@@ -65,14 +65,14 @@ export function useUser() {
     data: user,
     error,
     isLoading,
-  } = useQuery<SelectUser | null, Error>({
+  } = useQuery<User | null, Error>({
     queryKey: ["user"],
     queryFn: fetchUser,
     staleTime: Infinity,
     retry: false,
   });
 
-  const loginMutation = useMutation<RequestResult, Error, InsertUser>({
+  const loginMutation = useMutation<RequestResult, Error, User>({
     mutationFn: (userData) => handleRequest("/api/login", "POST", userData),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["user"] });
@@ -86,7 +86,7 @@ export function useUser() {
     },
   });
 
-  const registerMutation = useMutation<RequestResult, Error, InsertUser>({
+  const registerMutation = useMutation<RequestResult, Error, User>({
     mutationFn: (userData) => handleRequest("/api/register", "POST", userData),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["user"] });

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "../components/ui/button";
 import { PlusCircle } from "lucide-react";
-import type { SelectUser } from "../db/schema";
+import type { User } from "../db/schema";
 import { useToast } from "../hooks/use-toast";
 import { UserTable } from "../components/UserTable";
 import { UserFormDialog } from "../components/UserFormDialog";
@@ -10,10 +10,10 @@ import { UserFormDialog } from "../components/UserFormDialog";
 export default function ManageUsers() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const [selectedUser, setSelectedUser] = useState<SelectUser | undefined>(undefined);
+  const [selectedUser, setSelectedUser] = useState<User | undefined>(undefined);
   const [isFormOpen, setIsFormOpen] = useState(false);
 
-  const { data: users, isLoading } = useQuery<SelectUser[]>({
+  const { data: users, isLoading } = useQuery<User[]>({
     queryKey: ["/api/users"],
   });
 
@@ -50,7 +50,7 @@ export default function ManageUsers() {
     }
   };
 
-  const handleEdit = (user: SelectUser) => {
+  const handleEdit = (user: User) => {
     setSelectedUser(user);
     setIsFormOpen(true);
   };

@@ -7,12 +7,12 @@ import {
   CardTitle,
 } from "../components/ui/card";
 import { PlusCircle, PawPrint, Heart, Users, MapPin } from "lucide-react";
-import type { SelectPet } from "../db/schema";
+import type { Pet } from "../db/schema";
 import { Sidebar } from "../components/Sidebar";
 
 export default function Dashboard() {
-  const { data: pets = [], isLoading } = useQuery<SelectPet[]>({
-    queryKey: ["/api/pets"],
+  const { data: pets = [], isLoading } = useQuery<Pet[]>({
+    queryKey: ["/mascotas"],
   });
 
   const stats = [
@@ -25,21 +25,21 @@ export default function Dashboard() {
     },
     {
       title: "Disponibles",
-      value: pets.filter(pet => !pet.isAdopted).length,
+      value: pets.filter(pet => !pet.estadoAdopcion).length,
       description: "Esperando un hogar",
       icon: Heart,
       color: "text-[#FF5C7F]",
     },
     {
       title: "Adoptados",
-      value: pets.filter(pet => pet.isAdopted).length,
+      value: pets.filter(pet => pet.estadoAdopcion).length,
       description: "Hogares encontrados",
       icon: Users,
       color: "text-green-600",
     },
     {
       title: "Ubicaciones",
-      value: new Set(pets.map(pet => pet.location)).size,
+      value: new Set(pets.map(pet => pet.ubicacion)).size,
       description: "Ciudades activas",
       icon: MapPin,
       color: "text-purple-600",
@@ -133,26 +133,26 @@ export default function Dashboard() {
                     <div key={pet.id} className="flex items-center space-x-4 p-3 rounded-lg hover:bg-gray-50 transition-colors">
                       <div className="h-12 w-12 rounded-lg overflow-hidden flex-shrink-0">
                         <img
-                          src={pet.imageUrl}
-                          alt={pet.name}
+                          src={pet.imagenUrl}
+                          alt={pet.nombre}
                           className="h-full w-full object-cover"
                         />
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium text-gray-900 truncate">
-                          {pet.name}
+                          {pet.nombre}
                         </p>
                         <p className="text-sm text-gray-500 truncate">
-                          {pet.breed} · {pet.location}
+                          {pet.raza} · {pet.ubicacion}
                         </p>
                       </div>
                       <div className="flex items-center">
                         <span className={`px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                          pet.isAdopted 
+                          pet.estadoAdopcion 
                             ? 'bg-green-100 text-green-800' 
                             : 'bg-blue-100 text-blue-800'
                         }`}>
-                          {pet.isAdopted ? 'Adoptado' : 'Disponible'}
+                          {pet.estadoAdopcion ? 'Adoptado' : 'Disponible'}
                         </span>
                       </div>
                     </div>

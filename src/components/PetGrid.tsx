@@ -2,24 +2,24 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { PetCard } from "./PetCard";
 import { FiltersSection } from "./FiltersSection";
-import type { SelectPet } from "../db/schema";
+import type { Pet } from "../db/schema";
 
 export function PetGrid() {
   const [ageRange, setAgeRange] = useState<[number, number]>([0, 15]);
   const [selectedBreed, setSelectedBreed] = useState("");
 
-  const { data: pets = [], isLoading } = useQuery<SelectPet[]>({
-    queryKey: ["/api/pets"],
+  const { data: pets = [], isLoading } = useQuery<Pet[]>({
+    queryKey: ["/mascotas"],
   });
 
-  const availableBreeds = Array.from(new Set(pets.map(pet => pet.breed)));
+  const availableBreeds = Array.from(new Set(pets.map(pet => pet.raza)));
 
   const filteredPets = pets.filter(pet => {
     // Convert age string to number for comparison
-    const ageNum = parseInt(pet.age);
+    const ageNum = parseInt(pet.edad.toString());
     const ageInRange = isNaN(ageNum) || (ageNum >= ageRange[0] && ageNum <= ageRange[1]);
-    const breedMatches = !selectedBreed || pet.breed === selectedBreed;
-    return ageInRange && breedMatches && !pet.isAdopted;
+    const breedMatches = !selectedBreed || pet.raza === selectedBreed;
+    return ageInRange && breedMatches && !pet.estadoAdopcion;
   });
 
   if (isLoading) {
@@ -51,14 +51,14 @@ export function PetGrid() {
           {filteredPets.map((pet) => (
             <PetCard
               key={pet.id}
-              name={pet.name}
-              age={pet.age}
-              breed={pet.breed}
-              location={pet.location}
-              imageUrl={pet.imageUrl}
-              requirements={pet.requirements}
-              healthStatus={pet.healthStatus}
-              personality={pet.personality}
+              nombre={pet.nombre}
+              edad={pet.edad.toString()}
+              raza={pet.raza}
+              ubicacion={pet.ubicacion}
+              imagenUrl={pet.imagenUrl || ''}
+              requisitos={pet.requisitos}
+              estadosDeSalud={pet.estadosDeSalud}
+              personalidad={pet.personalidad}
             />
           ))}
         </div>

@@ -5,26 +5,26 @@ import { cn } from "../lib/utils";
 import { useState } from "react";
 
 interface PetCardProps {
-  name: string;
-  age: string;
-  breed: string;
-  location: string;
-  imageUrl: string;
-  requirements: string[];
-  healthStatus: string[];
-  personality: string[];
+  nombre: string;
+  edad: string;
+  raza: string;
+  ubicacion: string;
+  imagenUrl: string;
+  requisitos: string[];
+  estadosDeSalud: string[];
+  personalidad: string[];
   onAdopt?: () => void;
 }
 
 export function PetCard({ 
-  name, 
-  age, 
-  breed, 
-  location, 
-  imageUrl, 
-  requirements,
-  healthStatus,
-  personality,
+  nombre, 
+  edad, 
+  raza, 
+  ubicacion, 
+  imagenUrl, 
+  requisitos,
+  estadosDeSalud,
+  personalidad,
   onAdopt 
 }: PetCardProps) {
   const [isFlipped, setIsFlipped] = useState(false);
@@ -55,7 +55,7 @@ export function PetCard({
             <CardContent className="p-0 h-full flex flex-col">
               <div className="aspect-square overflow-hidden rounded-t-xl flex-shrink-0">
                 <img
-                  src={imageUrl}
+                  src={imagenUrl}
                   alt={`Foto de ${name}`}
                   className="h-full w-full object-cover"
                   role="img"
@@ -63,11 +63,11 @@ export function PetCard({
               </div>
               <div className="p-6 flex-grow flex flex-col justify-between">
                 <div>
-                  <h3 className="text-2xl font-semibold mb-3">{name}</h3>
+                  <h3 className="text-2xl font-semibold mb-3">{nombre}</h3>
                   <div className="mt-2 space-y-2 text-base text-gray-700">
-                    <p aria-label={`Edad: ${age}`}>Edad: {age}</p>
-                    <p aria-label={`Raza: ${breed}`}>Raza: {breed}</p>
-                    <p aria-label={`Ubicación: ${location}`}>Ubicación: {location}</p>
+                    <p aria-label={`Edad: ${edad}`}>Edad: {edad}</p>
+                    <p aria-label={`Raza: ${raza}`}>Raza: {raza}</p>
+                    <p aria-label={`Ubicación: ${ubicacion}`}>Ubicación: {ubicacion}</p>
                   </div>
                 </div>
               </div>
@@ -78,35 +78,35 @@ export function PetCard({
           <Card className="absolute inset-0 overflow-hidden bg-[#FFD868] border-none [backface-visibility:hidden] [transform:rotateY(180deg)]">
             <CardContent className="p-6 h-full flex flex-col">
               <div className="flex-grow">
-                <h3 className="text-xl font-semibold mb-4">{name}</h3>
+                <h3 className="text-xl font-semibold mb-4">{nombre}</h3>
                 <div className="space-y-4">
-                  {personality && personality.length > 0 && (
+                  {personalidad && personalidad.length > 0 && (
                     <div role="region" aria-label="Personalidad">
                       <h4 className="text-base font-semibold mb-1">Personalidad</h4>
                       <ul className="text-sm text-gray-700 list-disc list-inside">
-                        {personality.map((trait, index) => (
+                        {personalidad.map((trait, index) => (
                           <li key={index}>{trait}</li>
                         ))}
                       </ul>
                     </div>
                   )}
 
-                  {healthStatus && healthStatus.length > 0 && (
+                  {estadosDeSalud && estadosDeSalud.length > 0 && (
                     <div role="region" aria-label="Información de salud">
                       <h4 className="text-base font-semibold mb-1">Salud</h4>
                       <ul className="text-sm text-gray-700 list-disc list-inside">
-                        {healthStatus.map((status, index) => (
+                        {estadosDeSalud.map((status, index) => (
                           <li key={index}>{status}</li>
                         ))}
                       </ul>
                     </div>
                   )}
 
-                  {requirements && requirements.length > 0 && (
+                  {requisitos && requisitos.length > 0 && (
                     <div role="region" aria-label="Requisitos de adopción">
                       <h4 className="text-base font-semibold mb-1">Requisitos</h4>
                       <ul className="text-sm text-gray-700 list-disc list-inside">
-                        {requirements.map((req, index) => (
+                        {requisitos.map((req, index) => (
                           <li key={index}>{req}</li>
                         ))}
                       </ul>
@@ -133,7 +133,7 @@ export function PetCard({
           <AlertDialogHeader>
             <AlertDialogTitle>Confirmar Adopción</AlertDialogTitle>
             <AlertDialogDescription>
-              ¿Estás seguro de que deseas adoptar a {name}? Al confirmar, iniciarás el proceso de adopción.
+              ¿Estás seguro de que deseas adoptar a {nombre}? Al confirmar, iniciarás el proceso de adopción.
               Nuestro equipo se pondrá en contacto contigo para los siguientes pasos.
             </AlertDialogDescription>
           </AlertDialogHeader>

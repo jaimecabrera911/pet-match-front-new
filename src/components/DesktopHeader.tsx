@@ -1,4 +1,4 @@
-import { Link, useLocation } from "wouter";
+import { useLocation } from "wouter";
 import { Bell, Search } from "lucide-react";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";

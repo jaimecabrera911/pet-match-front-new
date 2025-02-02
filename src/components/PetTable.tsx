@@ -1,3 +1,4 @@
+import { Pet } from "../db/schema";
 import { Button } from "./ui/button";
 import {
   Table,
@@ -8,11 +9,10 @@ import {
   TableRow,
 } from "./ui/table";
 import { Pencil, Trash2 } from "lucide-react";
-import type { SelectPet } from "../db/schema";
 
 interface PetTableProps {
-  pets: SelectPet[];
-  onEdit: (pet: SelectPet) => void;
+  pets: Pet[];
+  onEdit: (pet: Pet) => void;
   onDelete: (petId: number) => void;
   isLoading?: boolean;
 }
@@ -62,20 +62,20 @@ export function PetTable({ pets, onEdit, onDelete, isLoading }: PetTableProps) {
       <TableBody>
         {pets.map((pet) => (
           <TableRow key={pet.id}>
-            <TableCell className="font-medium">{pet.name}</TableCell>
-            <TableCell>{pet.age}</TableCell>
-            <TableCell>{pet.breed}</TableCell>
-            <TableCell>{pet.location}</TableCell>
+            <TableCell className="font-medium">{pet.nombre}</TableCell>
+            <TableCell>{pet.edad}</TableCell>
+            <TableCell>{pet.raza}</TableCell>
             <TableCell>
-              {pet.isAdopted ? "Adoptado" : "Disponible"}
+              {pet.fundacionId}
             </TableCell>
+            <TableCell>{pet.estadoAdopcion}</TableCell>
             <TableCell>
               <div className="flex items-center gap-2">
                 <Button
                   variant="outline"
                   size="icon"
                   onClick={() => onEdit(pet)}
-                  aria-label={`Editar ${pet.name}`}
+                  aria-label={`Editar ${pet.nombre}`}
                 >
                   <Pencil className="h-4 w-4" />
                 </Button>
@@ -83,7 +83,7 @@ export function PetTable({ pets, onEdit, onDelete, isLoading }: PetTableProps) {
                   variant="destructive"
                   size="icon"
                   onClick={() => onDelete(pet.id)}
-                  aria-label={`Eliminar ${pet.name}`}
+                  aria-label={`Eliminar ${pet.nombre}`}
                 >
                   <Trash2 className="h-4 w-4" />
                 </Button>

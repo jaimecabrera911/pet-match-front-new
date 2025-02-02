@@ -1,3 +1,4 @@
+import { User } from "../db/schema";
 import { Button } from "./ui/button";
 import {
   Table,
@@ -8,11 +9,10 @@ import {
   TableRow,
 } from "./ui/table";
 import { Pencil, Trash2 } from "lucide-react";
-import type { SelectUser } from "../db/schema";
 
 interface UserTableProps {
-  users: SelectUser[];
-  onEdit: (user: SelectUser) => void;
+  users: User[];
+  onEdit: (user: User) => void;
   onDelete: (userId: number) => void;
   isLoading?: boolean;
 }

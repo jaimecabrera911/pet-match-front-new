@@ -69,7 +69,7 @@ function Router() {
       <Route path="/auth/login" component={AuthPage} />
       <Route path="/cuestionario-adopcion" component={CuestionarioAdopcion} />
       <Route path="/dashboard/*">
-        {(params) => (
+        {() => (
           <DashboardLayout>
             <DashboardRouter />
           </DashboardLayout>

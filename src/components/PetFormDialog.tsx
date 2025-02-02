@@ -8,18 +8,18 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "./ui/form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import type { SelectPet } from "../db/schema";
 import { X } from "lucide-react";
+import { Pet } from "../db/schema";
 
 const petSchema = z.object({
-  name: z.string().min(1, "El nombre es requerido"),
-  age: z.string().min(1, "La edad es requerida"),
-  breed: z.string().min(1, "La raza es requerida"),
-  location: z.string().min(1, "La ubicación es requerida"),
+  nombre: z.string().min(1, "El nombre es requerido"),
+  edad: z.number().min(1, "La edad es requerida"),
+  raza: z.string().min(1, "La raza es requerida"),
+  ubicacion: z.string().min(1, "La ubicación es requerida"),
   imageFile: z.any(),
-  requirements: z.array(z.string()).min(1, "Debe especificar al menos un requisito"),
-  healthStatus: z.array(z.string()).min(1, "Debe especificar al menos un estado de salud"),
-  personality: z.array(z.string()).min(1, "Debe especificar al menos un rasgo de personalidad"),
+  requisitos: z.array(z.string()).min(1, "Debe especificar al menos un requisito"),
+  estadosDeSalud: z.array(z.string()).min(1, "Debe especificar al menos un estado de salud"),
+  personalidad: z.array(z.string()).min(1, "Debe especificar al menos un rasgo de personalidad"),
 });
 
 type PetFormData = z.infer<typeof petSchema>;
@@ -27,7 +27,7 @@ type PetFormData = z.infer<typeof petSchema>;
 interface PetFormDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  pet?: SelectPet;
+  pet?: Pet;
 }
 
 export function PetFormDialog({ isOpen, onClose, pet }: PetFormDialogProps) {
@@ -40,32 +40,32 @@ export function PetFormDialog({ isOpen, onClose, pet }: PetFormDialogProps) {
   const form = useForm<PetFormData>({
     resolver: zodResolver(petSchema),
     defaultValues: {
-      name: pet?.name ?? "",
-      age: pet?.age ?? "",
-      breed: pet?.breed ?? "",
-      location: pet?.location ?? "",
-      requirements: pet?.requirements ?? [],
-      healthStatus: pet?.healthStatus ?? [],
-      personality: pet?.personality ?? [],
+      nombre: pet?.nombre ?? "",
+      edad: pet?.edad ? Number(pet.edad) : undefined,
+      raza: pet?.raza ?? "", 
+      ubicacion: pet?.ubicacion ?? "",
+      requisitos: pet?.requisitos ?? [],
+      estadosDeSalud: pet?.estadosDeSalud ?? [],
+      personalidad: pet?.personalidad ?? [],
     },
   });
 
   const createPetMutation = useMutation({
     mutationFn: async (data: PetFormData) => {
       const formData = new FormData();
-      formData.append("name", data.name);
-      formData.append("age", data.age);
-      formData.append("breed", data.breed);
-      formData.append("location", data.location);
-      formData.append("requirements", JSON.stringify(data.requirements));
-      formData.append("healthStatus", JSON.stringify(data.healthStatus));
-      formData.append("personality", JSON.stringify(data.personality));
+      formData.append("nombre", data.nombre);
+      formData.append("edad", data.edad.toString());
+      formData.append("raza", data.raza);
+      formData.append("ubicacion", data.ubicacion);
+      formData.append("requisitos", JSON.stringify(data.requisitos));
+      formData.append("estadosDeSalud", JSON.stringify(data.estadosDeSalud));
+      formData.append("personalidad", JSON.stringify(data.personalidad));
 
       if (data.imageFile instanceof File) {
         formData.append("image", data.imageFile);
       }
 
-      const response = await fetch("/api/pets", {
+      const response = await fetch("/mascotas", {
         method: "POST",
         body: formData,
         credentials: "include",
@@ -79,7 +79,7 @@ export function PetFormDialog({ isOpen, onClose, pet }: PetFormDialogProps) {
       return response.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/pets"] });
+      queryClient.invalidateQueries({ queryKey: ["/mascotas"] });
       toast({
         title: "¡Éxito!",
         description: "Mascota creada correctamente",
@@ -99,19 +99,19 @@ export function PetFormDialog({ isOpen, onClose, pet }: PetFormDialogProps) {
   const updatePetMutation = useMutation({
     mutationFn: async (data: PetFormData & { id: number }) => {
       const formData = new FormData();
-      formData.append("name", data.name);
-      formData.append("age", data.age);
-      formData.append("breed", data.breed);
-      formData.append("location", data.location);
-      formData.append("requirements", JSON.stringify(data.requirements));
-      formData.append("healthStatus", JSON.stringify(data.healthStatus));
-      formData.append("personality", JSON.stringify(data.personality));
+      formData.append("nombre", data.nombre);
+      formData.append("edad", data.edad.toString());
+      formData.append("raza", data.raza);
+      formData.append("ubicacion", data.ubicacion);
+      formData.append("requisitos", JSON.stringify(data.requisitos));
+      formData.append("estadosDeSalud", JSON.stringify(data.estadosDeSalud));
+      formData.append("personalidad", JSON.stringify(data.personalidad));
 
       if (data.imageFile instanceof File) {
         formData.append("image", data.imageFile);
       }
 
-      const response = await fetch(`/api/pets/${data.id}`, {
+      const response = await fetch(`/mascotas/${data.id}`, {
         method: "PUT",
         body: formData,
         credentials: "include",
@@ -125,7 +125,7 @@ export function PetFormDialog({ isOpen, onClose, pet }: PetFormDialogProps) {
       return response.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/pets"] });
+      queryClient.invalidateQueries({ queryKey: ["/mascotas"] });
       toast({
         title: "¡Éxito!",
         description: "Mascota actualizada correctamente",
@@ -151,29 +151,29 @@ export function PetFormDialog({ isOpen, onClose, pet }: PetFormDialogProps) {
 
   const handleAddRequirement = () => {
     if (newRequirement.trim()) {
-      const currentRequirements = form.getValues("requirements") || [];
-      form.setValue("requirements", [...currentRequirements, newRequirement.trim()]);
+      const currentRequirements = form.getValues("requisitos") || [];
+      form.setValue("requisitos", [...currentRequirements, newRequirement.trim()]);
       setNewRequirement("");
     }
   };
 
   const handleAddHealthStatus = () => {
     if (newHealthStatus.trim()) {
-      const currentStatus = form.getValues("healthStatus") || [];
-      form.setValue("healthStatus", [...currentStatus, newHealthStatus.trim()]);
+      const currentStatus = form.getValues("estadosDeSalud") || [];
+      form.setValue("estadosDeSalud", [...currentStatus, newHealthStatus.trim()]);
       setNewHealthStatus("");
     }
   };
 
   const handleAddPersonality = () => {
     if (newPersonality.trim()) {
-      const currentPersonality = form.getValues("personality") || [];
-      form.setValue("personality", [...currentPersonality, newPersonality.trim()]);
+      const currentPersonality = form.getValues("personalidad") || [];
+      form.setValue("personalidad", [...currentPersonality, newPersonality.trim()]);
       setNewPersonality("");
     }
   };
 
-  const handleRemoveItem = (field: "requirements" | "healthStatus" | "personality", index: number) => {
+  const handleRemoveItem = (field: "requisitos" | "estadosDeSalud" | "personalidad", index: number) => {
     const current = form.getValues(field) || [];
     form.setValue(field, current.filter((_, i) => i !== index));
   };
@@ -188,7 +188,7 @@ export function PetFormDialog({ isOpen, onClose, pet }: PetFormDialogProps) {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
               control={form.control}
-              name="name"
+              name="nombre"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Nombre</FormLabel>
@@ -202,7 +202,7 @@ export function PetFormDialog({ isOpen, onClose, pet }: PetFormDialogProps) {
             <div className="grid grid-cols-2 gap-4">
               <FormField
                 control={form.control}
-                name="age"
+                name="edad"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Edad</FormLabel>
@@ -215,7 +215,7 @@ export function PetFormDialog({ isOpen, onClose, pet }: PetFormDialogProps) {
               />
               <FormField
                 control={form.control}
-                name="breed"
+                name="raza"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Raza</FormLabel>
@@ -229,7 +229,7 @@ export function PetFormDialog({ isOpen, onClose, pet }: PetFormDialogProps) {
             </div>
             <FormField
               control={form.control}
-              name="location"
+              name="ubicacion"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Ubicación</FormLabel>
@@ -243,7 +243,7 @@ export function PetFormDialog({ isOpen, onClose, pet }: PetFormDialogProps) {
 
             <FormField
               control={form.control}
-              name="requirements"
+              name="requisitos"
               render={() => (
                 <FormItem>
                   <FormLabel>Requisitos de Adopción</FormLabel>
@@ -259,12 +259,12 @@ export function PetFormDialog({ isOpen, onClose, pet }: PetFormDialogProps) {
                     </Button>
                   </div>
                   <div className="flex flex-wrap gap-2 mt-2">
-                    {form.watch("requirements")?.map((req, index) => (
+                    {form.watch("requisitos")?.map((req, index) => (
                       <div key={index} className="flex items-center gap-1 bg-secondary px-2 py-1 rounded-md">
                         <span>{req}</span>
                         <button
                           type="button"
-                          onClick={() => handleRemoveItem("requirements", index)}
+                          onClick={() => handleRemoveItem("requisitos", index)}
                           className="text-muted-foreground hover:text-foreground"
                         >
                           <X className="h-4 w-4" />
@@ -279,7 +279,7 @@ export function PetFormDialog({ isOpen, onClose, pet }: PetFormDialogProps) {
 
             <FormField
               control={form.control}
-              name="healthStatus"
+              name="estadosDeSalud"
               render={() => (
                 <FormItem>
                   <FormLabel>Estado de Salud</FormLabel>
@@ -295,12 +295,12 @@ export function PetFormDialog({ isOpen, onClose, pet }: PetFormDialogProps) {
                     </Button>
                   </div>
                   <div className="flex flex-wrap gap-2 mt-2">
-                    {form.watch("healthStatus")?.map((status, index) => (
+                    {form.watch("estadosDeSalud")?.map((status, index) => (
                       <div key={index} className="flex items-center gap-1 bg-secondary px-2 py-1 rounded-md">
                         <span>{status}</span>
                         <button
                           type="button"
-                          onClick={() => handleRemoveItem("healthStatus", index)}
+                          onClick={() => handleRemoveItem("estadosDeSalud", index)}
                           className="text-muted-foreground hover:text-foreground"
                         >
                           <X className="h-4 w-4" />
@@ -315,7 +315,7 @@ export function PetFormDialog({ isOpen, onClose, pet }: PetFormDialogProps) {
 
             <FormField
               control={form.control}
-              name="personality"
+              name="personalidad"
               render={() => (
                 <FormItem>
                   <FormLabel>Personalidad</FormLabel>
@@ -331,12 +331,12 @@ export function PetFormDialog({ isOpen, onClose, pet }: PetFormDialogProps) {
                     </Button>
                   </div>
                   <div className="flex flex-wrap gap-2 mt-2">
-                    {form.watch("personality")?.map((trait, index) => (
+                    {form.watch("personalidad")?.map((trait, index) => (
                       <div key={index} className="flex items-center gap-1 bg-secondary px-2 py-1 rounded-md">
                         <span>{trait}</span>
                         <button
                           type="button"
-                          onClick={() => handleRemoveItem("personality", index)}
+                          onClick={() => handleRemoveItem("personalidad", index)}
                           className="text-muted-foreground hover:text-foreground"
                         >
                           <X className="h-4 w-4" />
