@@ -14,12 +14,12 @@ export default function ManageUsers() {
   const [isFormOpen, setIsFormOpen] = useState(false);
 
   const { data: users, isLoading } = useQuery<User[]>({
-    queryKey: ["/api/users"],
+    queryKey: ["/usuarios"],
   });
 
   const deleteUserMutation = useMutation({
     mutationFn: async (userId: number) => {
-      const response = await fetch(`/api/users/${userId}`, {
+      const response = await fetch(`/usuarios/${userId}`, {
         method: "DELETE",
         credentials: "include",
       });
@@ -29,7 +29,7 @@ export default function ManageUsers() {
       }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/users"] });
+      queryClient.invalidateQueries({ queryKey: ["/usuarios"] });
       toast({
         title: "Éxito",
         description: "Usuario eliminado correctamente",

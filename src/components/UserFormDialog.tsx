@@ -93,7 +93,7 @@ export function UserFormDialog({ isOpen, onClose, user }: UserFormDialogProps) {
         fechaNacimiento: data.fechaNacimiento ? new Date(data.fechaNacimiento).toISOString() : null,
       };
 
-      const response = await fetch("/api/users", {
+      const response = await fetch("/usuarios", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formattedData),
@@ -107,7 +107,7 @@ export function UserFormDialog({ isOpen, onClose, user }: UserFormDialogProps) {
       return response.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/users"] });
+      queryClient.invalidateQueries({ queryKey: ["/usuarios"] });
       toast({
         title: "Éxito",
         description: "Usuario creado correctamente",
@@ -132,7 +132,7 @@ export function UserFormDialog({ isOpen, onClose, user }: UserFormDialogProps) {
         fechaNacimiento: data.fechaNacimiento ? new Date(data.fechaNacimiento).toISOString() : null,
       };
 
-      const response = await fetch(`/api/users/${user.id}`, {
+      const response = await fetch(`/usuarios/${user.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formattedData),
@@ -146,7 +146,7 @@ export function UserFormDialog({ isOpen, onClose, user }: UserFormDialogProps) {
       return response.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/users"] });
+      queryClient.invalidateQueries({ queryKey: ["/usuarios"] });
       toast({
         title: "Éxito",
         description: "Usuario actualizado correctamente",
